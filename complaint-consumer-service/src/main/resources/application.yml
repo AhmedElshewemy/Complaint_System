@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: complaint-consumer-service
+  kafka:
+    bootstrap-servers: host.docker.internal:9092
+    consumer:
+      group-id: complaint-consumers
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+  datasource:
+    url: jdbc:postgresql://host.docker.internal:5432/complaint_db
+    username: complaint_user
+    password: complaint_pass
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
