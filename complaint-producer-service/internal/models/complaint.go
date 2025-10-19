@@ -1,8 +1,8 @@
 package models
 
 type Complaint struct {
-	ComplaintID string `json:"complaintId"`
-	UserID      string `json:"userId"`
+	ID          string `json:"id"`
+	User        string `json:"user"`
 	Description string `json:"description"`
 	Status      string `json:"status"`
 	Category    string `json:"category"`
