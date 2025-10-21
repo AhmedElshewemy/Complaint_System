@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/segmentio/kafka-go"
-	"complaint-producer/internal/models"
+	"github.com/elshewemy/complaint-producer-service/internal/models"
 )
 
 type Producer struct {
@@ -25,7 +25,7 @@ func NewProducer(broker string, topic string) *Producer {
 
 func (p *Producer) PublishComplaintEvent(c models.Complaint) error {
 	event := map[string]interface{}{
-		"eventType":    "complaint.created",
+		"eventType":    "complaints.created",
 		"eventVersion": 1,
 		"timestamp":    time.Now().UTC().Format(time.RFC3339),
 		"payload":      c,

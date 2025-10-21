@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 	"github.com/google/uuid"
-	"complaint-producer/internal/models"
-	"complaint-producer/internal/kafka"
+	"github.com/elshewemy/complaint-producer-service/internal/kafka"
+	"github.com/elshewemy/complaint-producer-service/internal/models"
 )
 
 type Handler struct {
@@ -20,7 +20,7 @@ func (h *Handler) CreateComplaint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c.ComplaintID = uuid.NewString()
+	c.ID = uuid.NewString()
 	c.Status = "OPEN"
 	c.CreatedAt = time.Now().UTC().Format(time.RFC3339)
 
