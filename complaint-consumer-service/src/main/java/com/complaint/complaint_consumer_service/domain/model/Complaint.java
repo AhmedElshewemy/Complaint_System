@@ -1,5 +1,6 @@
 package com.complaint.complaint_consumer_service.domain.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,7 +11,7 @@ public class Complaint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;          // Auto-generated DB ID
-
+    @Column(name = "username")
     private String user;      // User who submitted the complaint
     private String category;  // Complaint type (e.g., "Service Delay")
     private String message;   // Complaint content
