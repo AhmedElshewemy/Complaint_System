@@ -22,7 +22,7 @@ func (h *Handler) CreateComplaint(w http.ResponseWriter, r *http.Request) {
 
 	c.ID = uuid.NewString()
 	c.Status = "OPEN"
-	c.CreatedAt = time.Now().UTC().Format(time.RFC3339)
+	c.Created = time.Now().UTC().Format(time.RFC3339)
 
 	err := h.Producer.PublishComplaintEvent(c)
 	if err != nil {
