@@ -32,7 +32,10 @@ public class ComplaintKafkaListener {
         } catch (Exception e) {
             System.err.println(" Error processing message: " + e.getMessage());
            // failedComplaintRepository.save(new FailedComplaint(complaintEvent, e.getMessage()));
-
+          //  saveToErrorLog(complaintEvent.getPayload(), e);
         }
+    }
+    private void saveToErrorLog(Complaint complaint, Exception e) {
+        // write to file /send email /store in another DB
     }
 }

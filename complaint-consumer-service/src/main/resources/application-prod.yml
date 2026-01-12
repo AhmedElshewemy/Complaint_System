@@ -37,3 +37,9 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n"
   file:
     name: logs/complaint-service.log
+management:
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true

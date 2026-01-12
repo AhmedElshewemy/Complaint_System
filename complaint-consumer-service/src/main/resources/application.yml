@@ -1,4 +1,9 @@
 spring:
+
+# it hardcodes behavior.Avoid this in real projects
+  profiles:
+    active: dev
+ 
   application:
     name: complaint-consumer-service
   kafka:
@@ -19,6 +24,11 @@ spring:
       ddl-auto: update
       format_sql: true
     show-sql: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
 
 server:
    port: 8081
