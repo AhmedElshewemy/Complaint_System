@@ -48,7 +48,7 @@ public class ComplaintKafkaListener {
          
             complaintService.saveComplaint(complaint);
 
-            log.info(" Complaint processed for user: " + complaint.getUser()+ " and the message: "+complaint.getMessage());
+            log.info("Complaint processed for user: {} and message: {}", complaint.getUser(), complaint.getMessage());
         
         } catch (Exception e) {
             log.error("Error processing message. Raw message was: {}", message, e);
@@ -59,7 +59,8 @@ public class ComplaintKafkaListener {
                 log.error("Failed specifically at business logic for user: {}", complaintEvent.getPayload().getUser());
                 // saveToErrorLog(complaintEvent.getPayload(), e);
             }
-           // failedComplaintRepository.save(new FailedComplaint(complaintEvent, e.getMessage()));
+          
+          throw e;
         }
     }
 
