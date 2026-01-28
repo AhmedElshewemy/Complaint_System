@@ -24,7 +24,7 @@ public class KafkaConsumerConfig {
     private String bootstrapServers;
 
     @Bean
-    public ConsumerFactory<String, String> consumerFactory() {
+    public ConsumerFactory<String, ComplaintEventDTO> consumerFactory() {
         // Configuration for Kafka Consumer
         Map<String, Object> props = new HashMap<>();
         // Address of Kafka broker
@@ -57,11 +57,11 @@ public class KafkaConsumerConfig {
         DeadLetterPublishingRecoverer recoverer =
              new DeadLetterPublishingRecoverer(
                 kafkaTemplate,
-                (record,ex) -> new TopicPartition(record.topic() + ".dlt", record.partition()));
+                (record,ex) -> new TopicPartition(record.topic() + ".DLQ", record.partition()));
 
-        DefaultErrorHandler handler = new DefaultErrorHandler(recoverer, new FixedBackOff(0L, 0));
+        DefaultErrorHandler handler = new DefaultErrorHandler(recoverer, new FixedBackOff(2000L, 3));
             
-          // These should NEVER be retried
+          
         handler.addNotRetryableExceptions(
                 com.fasterxml.jackson.databind.exc.MismatchedInputException.class,
                 com.fasterxml.jackson.core.JsonParseException.class,

@@ -7,21 +7,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.retry.annotation.Backoff; 
-import org.springframework.kafka.annotation.RetryableTopic; 
-
 
 import com.complaint.complaint_consumer_service.DTO.ComplaintEventDTO;
 import com.complaint.complaint_consumer_service.domain.model.Complaint;
 import com.complaint.complaint_consumer_service.domain.service.ComplaintService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Slf4j
 @Component
 public class ComplaintKafkaListener {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final ComplaintService complaintService;
 
@@ -81,6 +76,5 @@ public class ComplaintKafkaListener {
             event
         );
         }
-
 
 }
