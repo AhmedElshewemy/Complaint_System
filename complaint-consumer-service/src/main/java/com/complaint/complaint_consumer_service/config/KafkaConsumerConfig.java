@@ -15,6 +15,7 @@ import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.util.backoff.FixedBackOff;
 import org.springframework.beans.factory.annotation.Value;
+import org.apache.kafka.common.TopicPartition;
 
 @Configuration
 public class KafkaConsumerConfig {
@@ -40,24 +41,34 @@ public class KafkaConsumerConfig {
 
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(DefaultErrorHandler errorHandler) {
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
 
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
        
         factory.setConsumerFactory(consumerFactory());
-        factory.setCommonErrorHandler(errorHandler);
        
         return factory;
     }
 
 
     @Bean
-    public DefaultErrorHandler errorHandler(KafkaTemplate<Object, Object> template) {
+    public DefaultErrorHandler errorHandler(KafkaTemplate<Object, Object> kafkaTemplate) {
         // 1. Define where the failed messages go (defaults to topicname.DLT)
-        DeadLetterPublishingRecoverer recoverer = new DeadLetterPublishingRecoverer(template);
+        DeadLetterPublishingRecoverer recoverer =
+             new DeadLetterPublishingRecoverer(
+                kafkaTemplate,
+                (record,ex) -> new TopicPartition(record.topic() + ".dlt", record.partition()));
 
-        // 2. Retry 3 times with a 2-second gap between attempts
-        return new DefaultErrorHandler(recoverer, new FixedBackOff(2000L, 3L));
+        DefaultErrorHandler handler = new DefaultErrorHandler(recoverer, new FixedBackOff(0L, 0));
+            
+          // These should NEVER be retried
+        handler.addNotRetryableExceptions(
+                com.fasterxml.jackson.databind.exc.MismatchedInputException.class,
+                com.fasterxml.jackson.core.JsonParseException.class,
+                IllegalArgumentException.class
+        );
+
+        return handler;
     }
 }
     

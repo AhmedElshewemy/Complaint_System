@@ -9,7 +9,7 @@ public class ComplaintEventDTO {
     private String timestamp;
     private Complaint payload;
 
-    // Getters and setters
+    
     public String getEventType() { return eventType; }
     public void setEventType(String eventType) { this.eventType = eventType; }
     public int getEventVersion() { return eventVersion; }

@@ -30,53 +30,57 @@ public class ComplaintKafkaListener {
     }
 
 
-    // 1. Automatically retries 3 times, then sends to "complaints.created-dlt"
-    @RetryableTopic(
-        attempts = "3",
-        backoff = @Backoff(delay = 2000, multiplier = 2.0),
-        autoCreateTopics = "true"
-    )
+
     @KafkaListener(topics = "complaints.created", groupId = "complaint-consumers")
-    public void consumeMessage(String message) {
-        ComplaintEventDTO complaintEvent = null;
+    public void consumeMessage(ComplaintEventDTO complaintEvent) throws Exception{
+
         try {
-         
-            // Deserialize JSON message to ComplaintEventDTO object
-            complaintEvent = objectMapper.readValue(message, ComplaintEventDTO.class);
          
             Complaint complaint = complaintEvent.getPayload();
          
-            complaintService.saveComplaint(complaint);
+        
+        if (complaint.getUser() == null) {
+            throw new IllegalArgumentException("User is required");
+        }
 
-            log.info("Complaint processed for user: {} and message: {}", complaint.getUser(), complaint.getMessage());
+            complaintService.saveComplaint(complaint);
+              log.info(
+            "Complaint saved. id={}, user={} and message: {}",
+            complaint.getId(),
+            complaint.getUser(),
+            complaint.getMessage()
+        );
         
         } catch (Exception e) {
-            log.error("Error processing message. Raw message was: {}", message, e);
+            log.error("Error processing message. Raw message was: {}", complaintEvent, e);
 
 
             // Now you can safely check if complaintEvent was successfully parsed
             if (complaintEvent != null) {
                 log.error("Failed specifically at business logic for user: {}", complaintEvent.getPayload().getUser());
-                // saveToErrorLog(complaintEvent.getPayload(), e);
+               
             }
           
           throw e;
         }
     }
 
-    @DltHandler
-    public void handleFailedMessage(String message) {
-        log.info(" Message moved to DLT: " + message);
-    }
+       @KafkaListener(
+        topics = "complaints.created.DLQ",
+        groupId = "complaint-dlq-consumers"
+    )
+    public void consumeDlq(
+            ComplaintEventDTO event,
+            @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+            @Header(KafkaHeaders.EXCEPTION_MESSAGE) String error
+    ) {
+        log.error(
+            "DLQ message received from {}. Error={}. Payload={}",
+            topic,
+            error,
+            event
+        );
+        }
 
-    // 2. This method catches messages that failed all 3 retry attempts
-    // @DltHandler
-    // public void handleDlt(ComplaintEventDTO event, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
-    //     log.error("Event sent to Dead Letter Topic ({}): {}", topic, event);
-    //     // Here you can save to a special 'failed_complaints' table if you still want to
-    // }
 
-    private void saveToErrorLog(Complaint complaint, Exception e) {
-        // write to file /send email /store in another DB
-    }
 }
