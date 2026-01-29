@@ -27,16 +27,17 @@ public class ComplaintKafkaListener {
 
 
     @KafkaListener(topics = "complaints.created", groupId = "complaint-consumers")
-    public void consumeMessage(ComplaintEventDTO complaintEvent) throws Exception{
+    public void consumeMessage(ComplaintEventDTO complaintEvent) {
 
         try {
          
             Complaint complaint = complaintEvent.getPayload();
          
         
-        if (complaint.getUser() == null) {
-            throw new IllegalArgumentException("User is required");
+        if (complaint.getUser() == null || complaint.getUser().trim().isEmpty()) {
+         throw new IllegalArgumentException("User is required");
         }
+
 
             complaintService.saveComplaint(complaint);
               log.info(
