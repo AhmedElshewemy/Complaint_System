@@ -49,12 +49,12 @@ public class KafkaConsumerConfig {
 
 
     // @Bean
-    // public ConcurrentKafkaListenerContainerFactory<String, ComplaintEventDTO> kafkaListenerContainerFactory() {
+    // public ConcurrentKafkaListenerContainerFactory<String, ComplaintEventDTO> kafkaListenerContainerFactory(DefaultErrorHandler errorHandler) {
 
     //     ConcurrentKafkaListenerContainerFactory<String, ComplaintEventDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
        
     //     factory.setConsumerFactory(consumerFactory());
-       
+    //     factory.setCommonErrorHandler(errorHandler);   
     //     return factory;
     // }
 
