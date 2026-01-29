@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
@@ -23,32 +24,39 @@ public class KafkaConsumerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Bean
-    public ConsumerFactory<String, ComplaintEventDTO> consumerFactory() {
-        // Configuration for Kafka Consumer
-        Map<String, Object> props = new HashMap<>();
-        // Address of Kafka broker
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+    // @Bean
+    // public ConsumerFactory<String, ComplaintEventDTO> consumerFactory() {
+    //     // Configuration for Kafka Consumer
+    //     Map<String, Object> props = new HashMap<>();
+    //     // Address of Kafka broker
+    //     props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
        
-        // Deserializers for key and value
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+    //     // Deserializers for key and value
+    //     props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+    //     props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
 
-        // Group ID determines which consumer group this client belongs to
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "complaint-consumers");
-        return new DefaultKafkaConsumerFactory<>(props);
-    }
+    //     props.put(org.springframework.kafka.support.serializer.JsonDeserializer.TRUSTED_PACKAGES, "*");
+    
+    // //todo uncomment if issues arise
+    // //   props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.complaint.complaint_consumer_service.DTO");
+
+    //     props.put(org.springframework.kafka.support.serializer.JsonDeserializer.VALUE_DEFAULT_TYPE,
+    //           ComplaintEventDTO.class.getName());
 
 
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
+    //     return new DefaultKafkaConsumerFactory<>(props);
+    // }
 
-        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+
+    // @Bean
+    // public ConcurrentKafkaListenerContainerFactory<String, ComplaintEventDTO> kafkaListenerContainerFactory() {
+
+    //     ConcurrentKafkaListenerContainerFactory<String, ComplaintEventDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
        
-        factory.setConsumerFactory(consumerFactory());
+    //     factory.setConsumerFactory(consumerFactory());
        
-        return factory;
-    }
+    //     return factory;
+    // }
 
 
     @Bean
